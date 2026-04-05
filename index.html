@@ -234,7 +234,7 @@
             var rec = getRec();
             var a = answers;
             var hostingLabel = a.hosting === 'on' ? 'On-Premise' : (a.hosting === 'sh' ? 'Odoo.sh' : 'Online');
-            var deadlineLabel = a.deadline === 'urgent' ? 'Urgent (<2mo)' : (a.deadline === 'medium' ? 'Medium (2-4mo)' : 'Flexible (4+mo)');
+            var deadlineLabel = a.deadline === 'urgent' ? 'Urgent Timeline (<2mo)' : (a.deadline === 'medium' ? 'Medium Timeline (2-4mo)' : 'Flexible Timeline (4+mo)');
             var html = '<div class="header"><div class="title">Recommendation</div>';
             html += '<div class="subtitle">Based on: ' + a.size + ' client, ' + (a.multi === 'yes' ? 'multinational' : 'single-country') + ', ' + hostingLabel + ' hosting, ' + deadlineLabel + '</div></div>';
             
