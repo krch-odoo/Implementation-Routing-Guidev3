@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementation Routing Guide</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 650px;
+            width: 100%;
+            padding: 40px;
+        }
+        .header { margin-bottom: 30px; }
+        .title { font-size: 28px; font-weight: 700; color: #21272B; margin-bottom: 8px; }
+        .subtitle { font-size: 14px; color: #999; line-height: 1.5; }
+        .step-indicator { font-size: 13px; color: #714B67; font-weight: 600; margin-bottom: 20px; }
+        .badges { margin-bottom: 20px; }
+        .badge {
+            background: #FFF3E0;
+            border-left: 3px solid #FF9800;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #E65100;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .question { font-size: 18px; font-weight: 600; color: #21272B; margin-bottom: 12px; }
+        .question-desc { font-size: 13px; color: #666; margin-bottom: 20px; line-height: 1.5; }
+        .options { margin-bottom: 30px; }
+        .option {
+            padding: 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        .option:hover { border-color: #714B67; background: #f9f7fb; }
+        .option.selected { border-color: #714B67; background: #f0e8f0; }
+        .option-title { font-weight: 600; color: #21272B; margin-bottom: 4px; }
+        .option-desc { font-size: 13px; color: #666; }
+        .button-group { display: flex; gap: 12px; }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+        .btn-primary { background: #2E7D9C; color: white; }
+        .btn-primary:hover:not(:disabled) { background: #255a73; }
+        .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-secondary { background: #f0f0f0; color: #21272B; }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .recommendation {
+            background: #f9f7fb;
+            border-left: 4px solid #714B67;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .rec-label { font-size: 12px; color: #999; text-transform: uppercase; margin-bottom: 4px; }
+        .rec-title { font-size: 16px; font-weight: 700; color: #714B67; margin-bottom: 12px; }
+        .rec-content { font-size: 14px; line-height: 1.6; color: #21272B; }
+        .rec-content strong { color: #714B67; }
+        .section-header { font-size: 14px; font-weight: 700; color: #714B67; margin-top: 20px; margin-bottom: 12px; }
+        .next-steps { background: #f5f5f5; padding: 16px; border-radius: 6px; font-size: 13px; line-height: 1.8; }
+        .next-steps ol { padding-left: 24px; }
+        .next-steps li { margin-bottom: 8px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="assessment">
+            <div class="header">
+                <div class="title">Implementation Routing Guide</div>
+                <div class="subtitle">Route implementations strategically based on client timeline and capacity. Internal team: 3-4 week lead time + 3-12 month implementation. Partners: can start sooner, scale resources.</div>
+            </div>
+            <div id="questionContainer"></div>
+            <div class="button-group">
+                <button class="btn-secondary" id="backBtn" style="display:none;">Back</button>
+                <button class="btn-primary" id="nextBtn" disabled>Start assessment</button>
+            </div>
+        </div>
+        <div id="recommendation" class="hidden">
+            <div id="recommendationContent"></div>
+            <button class="btn-primary" id="resetBtn" style="width: 100%; margin-top: 20px;">Try another scenario</button>
+        </div>
+    </div>
+
+    <script>
+        var questions = [
+            { id: 'size', q: 'How many users will this implementation serve?', d: 'This impacts complexity and resource requirements.', opts: [{v: 'small', t: 'Under 50 users', d: 'Smaller deployment'}, {v: 'large', t: '50+ users', d: 'Enterprise-scale deployment'}] },
+            { id: 'multi', q: 'Does the client have multinational presence or intercurrency transactions?', d: 'Multi-national operations with multiple currencies add complexity.', opts: [{v: 'no', t: 'No', d: 'Single country, single currency'}, {v: 'yes', t: 'Yes', d: 'Multiple countries or intercurrency needs'}] },
+            { id: 'hosting', q: 'What is the hosting preference?', d: 'Hosting choice significantly impacts complexity and internal capacity.', opts: [{v: 'on', t: 'On-Premise', d: 'Hosted on client infrastructure'}, {v: 'sh', t: 'Odoo.sh (Cloud)', d: 'Odoo-managed cloud hosting'}, {v: 'ol', t: 'Online (SaaS)', d: 'Standard Odoo Online'}] },
+            { id: 'deadline', q: 'What is the client\'s go-live deadline?', d: 'This is the hard constraint. When does the client need to be live?', opts: [{v: 'urgent', t: 'Urgent: Less than 2 months', d: 'Client must go live less than 60 days'}, {v: 'medium', t: 'Medium: 2-4 months', d: 'Go-live window 60-120 days'}, {v: 'flex', t: 'Flexible: 4+ months', d: 'Go-live 120+ days out'}] },
+            { id: 'wait', q: 'Can the client wait for our lead time?', d: 'Our internal team typically has a 3-4 week assignment lead time.', opts: [{v: 'no', t: 'No, they need to start right away', d: 'Cannot wait 3-4 weeks'}, {v: 'yes', t: 'Yes, they can wait 3-4 weeks', d: 'Fine with our lead time'}] },
+            { id: 'complex', q: 'What is the implementation complexity?', d: 'Consider custom modules, developments, and extent of configuration.', opts: [{v: 'low', t: 'Low complexity', d: 'Standard configuration'}, {v: 'med', t: 'Medium complexity', d: 'Some custom modules'}, {v: 'high', t: 'High complexity', d: 'Heavy custom development'}] },
+            { id: 'comp', q: 'Are there compliance or regulatory requirements?', d: 'Industry-specific regulations impact complexity and expertise needed.', opts: [{v: 'std', t: 'Standard SMB', d: 'No specific compliance'}, {v: 'reg', t: 'HIPAA / Finance / Regulated', d: 'Compliance needs'}] },
+            { id: 'maturity', q: 'What is the client\'s technical maturity?', d: 'Client IT capability and hands-on support availability.', opts: [{v: 'none', t: 'No internal IT / Minimal', d: 'Limited technical support'}, {v: 'mid', t: 'Has IT team', d: 'Internal IT team'}, {v: 'adv', t: 'Advanced / Sophisticated', d: 'Strong tech team'}] },
+            { id: 'hist', q: 'Prior implementation history with us?', d: 'This clarifies the workflow path.', opts: [{v: 'none', t: 'None', d: 'First implementation'}, {v: 'act', t: 'Active hours', d: 'Current Success Pack'}, {v: 'exp', t: 'Expired hours', d: 'Prior implementation ended'}] }
+        ];
+        
+        var step = 0;
+        var answers = {};
+        
+        function checkGates() {
+            var a = answers;
+            var gates = [];
+            if (a.size === 'large') gates.push('Large client (50+ users)');
+            if (a.multi === 'yes') gates.push('Multinational/intercurrency complexity');
+            if (a.hosting === 'on') gates.push('On-premise infrastructure required');
+            if (a.deadline === 'urgent') gates.push('Urgent timeline (< 2 months)');
+            if (a.wait === 'no') gates.push('Cannot wait for internal lead time');
+            if (a.complex === 'high') gates.push('High complexity implementation');
+            if (a.comp === 'reg') gates.push('Regulated industry/compliance needs');
+            return gates;
+        }
+        
+        function render() {
+            if (step >= questions.length) {
+                showRec();
+                return;
+            }
+            var q = questions[step];
+            var html = '<div class="step-indicator">Step ' + (step + 1) + ' of ' + questions.length + '</div>';
+            
+            var gates = checkGates();
+            if (gates.length > 0) {
+                html += '<div class="badges">';
+                for (var i = 0; i < gates.length; i++) {
+                    html += '<div class="badge">⚡ Partner likely: ' + gates[i] + '</div>';
+                }
+                html += '</div>';
+            }
+            
+            html += '<div class="question">' + q.q + '</div>';
+            html += '<div class="question-desc">' + q.d + '</div>';
+            html += '<div class="options">';
+            for (var i = 0; i < q.opts.length; i++) {
+                var sel = answers[q.id] === q.opts[i].v ? ' selected' : '';
+                html += '<div class="option' + sel + '" onclick="pick(\'' + q.id + '\', \'' + q.opts[i].v + '\')">';
+                html += '<div class="option-title">' + q.opts[i].t + '</div>';
+                html += '<div class="option-desc">' + q.opts[i].d + '</div>';
+                html += '</div>';
+            }
+            html += '</div>';
+            document.getElementById('questionContainer').innerHTML = html;
+            document.getElementById('nextBtn').disabled = !answers[q.id];
+            document.getElementById('nextBtn').textContent = 'Next →';
+            document.getElementById('backBtn').style.display = step > 0 ? 'block' : 'none';
+        }
+        
+        function pick(id, val) {
+            answers[id] = val;
+            render();
+        }
+        
+        function goNext() {
+            step++;
+            render();
+        }
+        
+        function goBack() {
+            if (step > 0) {
+                step--;
+                render();
+            }
+        }
+        
+        function getRec() {
+            var a = answers;
+            
+            // Hard Partner gates
+            if (a.size === 'large') return {type: 'Partner', reason: 'Large client (50+ users) requires dedicated partner resources.'};
+            if (a.multi === 'yes') return {type: 'Partner', reason: 'Multinational presence or intercurrency transactions require partner expertise.'};
+            if (a.hosting === 'on') return {type: 'Partner', reason: 'On-premise hosting requires partner expertise and infrastructure management.'};
+            if (a.comp === 'reg' && a.maturity === 'none') return {type: 'Partner', reason: 'Regulated industry + limited internal IT requires partner expertise.'};
+            if (a.deadline === 'urgent') return {type: 'Partner', reason: 'Urgent deadline (less than 2 months) requires partner resources and accelerated timeline.'};
+            if (a.wait === 'no') return {type: 'Partner', reason: 'Cannot wait for 3-4 week lead time, partner can start immediately.'};
+            if (a.complex === 'high' && a.comp === 'reg') return {type: 'Partner', reason: 'High complexity + regulatory requirements demand partner expertise.'};
+            if (a.complex === 'high') return {type: 'Partner', reason: 'High complexity exceeds internal capacity with flexible timeline.'};
+            
+            // Expired hours + high complexity or urgent → Partner
+            if (a.hist === 'exp' && (a.complex === 'high' || a.deadline === 'urgent')) {
+                return {type: 'Partner', reason: 'Expired hours + high complexity/urgent timeline: Partner recommended over support pack.'};
+            }
+            
+            // For Online and Odoo.sh, use history to determine Internal pathway
+            if (a.hosting === 'ol' || a.hosting === 'sh') {
+                if (a.hist === 'act') return {type: 'Internal (BSA)', pathway: 'Work with assigned BSA'};
+                if (a.hist === 'exp') return {type: 'Internal (Support Pack)', pathway: 'Support Pack Purchase', alt: 'Partner'};
+                if (a.hist === 'none') return {type: 'Internal (Pre-Sales SOW)', pathway: 'Pre-Sales SOW Process'};
+            }
+            
+            // Default fallback
+            return {type: 'Internal (Pre-Sales SOW)', pathway: 'Pre-Sales SOW Process'};
+        }
+        
+        function showRec() {
+            var rec = getRec();
+            var a = answers;
+            var html = '<div class="header"><div class="title">Recommendation</div>';
+            html += '<div class="subtitle">Based on: ' + a.size + ' client, ' + (a.multi === 'yes' ? 'multinational' : 'single-country') + ', ' + a.hosting + ' hosting, ' + a.deadline + ' deadline</div></div>';
+            
+            html += '<div class="recommendation"><div class="rec-label">Recommended</div>';
+            html += '<div class="rec-title">' + rec.type + '</div></div>';
+            
+            if (rec.reason) {
+                html += '<div class="recommendation" style="border-left-color: #017E84;"><div class="rec-content"><strong>Why:</strong> ' + rec.reason + '</div></div>';
+            }
+            
+            if (rec.type.indexOf('Partner') > -1) {
+                html += '<div class="recommendation"><div class="section-header">Timeline</div>';
+                html += '<div class="rec-content">Partner can start sooner and compress timeline by scaling resources. Discuss timeline expectations early in partner conversations.</div></div>';
+                html += '<div class="recommendation"><div class="section-header">Next step: Brief partnership team</div>';
+                html += '<div class="next-steps"><ol>';
+                html += '<li>Lead with: Go-live deadline (critical)</li>';
+                html += '<li>Company info: Location, size, industry</li>';
+                html += '<li>Project scope: Complexity, budget appetite</li>';
+                html += '<li>Hosting preference and compliance needs</li>';
+                html += '<li>Partnership team sends 1-3 recommendations</li>';
+                html += '<li>Share partner page (odoo.com/partners) with client</li>';
+                html += '<li>Engage with partner for project updates and expansion opportunities</li>';
+                html += '</ol></div></div>';
+            } else {
+                html += '<div class="recommendation"><div class="section-header">Timeline</div>';
+                html += '<div class="rec-content">3-4 week lead time to start, then 3-12 months to go-live depending on complexity. Make sure client understands this total timeline.</div></div>';
+                html += '<div class="recommendation"><div class="section-header">MRR & account impact</div>';
+                html += '<div class="rec-content">Direct relationship strengthens adoption and engagement. Builds expansion foundation for modules, Odoo.sh, users.</div></div>';
+                html += '<div class="recommendation"><div class="section-header">Next step: ' + rec.pathway + '</div>';
+                html += '<div class="next-steps"><ol>';
+                if (rec.pathway === 'Pre-Sales SOW Process') {
+                    html += '<li>Set expectation: 3-4 weeks to START, then 3-12 months implementation</li>';
+                    html += '<li>Confirm client need and scope, ensure budget approved</li>';
+                    html += '<li>Submit SOW ticket via Pre-sales project app (2-day SLA)</li>';
+                    html += '<li>Gather requirements: company info, pain points, core modules</li>';
+                    html += '<li>Pre-sales provides estimate with phased workflows</li>';
+                    html += '<li>Implementation team takes over post-approval</li>';
+                    html += '<li>Schedule touchpoints throughout implementation</li>';
+                } else if (rec.pathway === 'Work with assigned BSA') {
+                    html += '<li>Confirm client need and scope</li>';
+                    html += '<li>Connect with assigned BSA, provide requirements ASAP</li>';
+                    html += '<li>BSA scopes work and provides estimate</li>';
+                    html += '<li>Verify timeline meets client go-live date</li>';
+                    html += '<li>Implementation proceeds with BSA</li>';
+                    html += '<li>Track for expansion opportunities</li>';
+                } else {
+                    html += '<li>Discuss support pack purchase (10 or 25 hours)</li>';
+                    html += '<li>Once purchased, pre-sales conducts estimation</li>';
+                    html += '<li>BSA provides realistic timeline to go-live</li>';
+                    html += '<li>Verify timeline meets client deadline</li>';
+                    html += '<li>Implementation proceeds with BSA</li>';
+                    html += '<li>Position for expansion conversations</li>';
+                }
+                html += '</ol></div></div>';
+                
+                if (rec.alt) {
+                    html += '<div class="recommendation" style="border-left-color: #FFB74D;"><div class="section-header">Alternative: Partner Implementation</div>';
+                    html += '<div class="rec-content">If client prefers faster delivery or cannot commit to support pack hours, partner implementation is also viable. Partner can compress timeline and absorb delivery risk.</div></div>';
+                }
+            }
+            
+            document.getElementById('recommendationContent').innerHTML = html;
+            document.getElementById('assessment').classList.add('hidden');
+            document.getElementById('recommendation').classList.remove('hidden');
+        }
+        
+        function reset() {
+            step = 0;
+            answers = {};
+            document.getElementById('assessment').classList.remove('hidden');
+            document.getElementById('recommendation').classList.add('hidden');
+            render();
+        }
+        
+        document.getElementById('nextBtn').onclick = goNext;
+        document.getElementById('backBtn').onclick = goBack;
+        document.getElementById('resetBtn').onclick = reset;
+        
+        render();
+    </script>
+</body>
+</html>Impl
