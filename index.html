@@ -233,8 +233,10 @@
         function showRec() {
             var rec = getRec();
             var a = answers;
+            var hostingLabel = a.hosting === 'on' ? 'On-Premise' : (a.hosting === 'sh' ? 'Odoo.sh' : 'Online');
+            var deadlineLabel = a.deadline === 'urgent' ? 'Urgent (<2mo)' : (a.deadline === 'medium' ? 'Medium (2-4mo)' : 'Flexible (4+mo)');
             var html = '<div class="header"><div class="title">Recommendation</div>';
-            html += '<div class="subtitle">Based on: ' + a.size + ' client, ' + (a.multi === 'yes' ? 'multinational' : 'single-country') + ', ' + a.hosting + ' hosting, ' + a.deadline + ' deadline</div></div>';
+            html += '<div class="subtitle">Based on: ' + a.size + ' client, ' + (a.multi === 'yes' ? 'multinational' : 'single-country') + ', ' + hostingLabel + ' hosting, ' + deadlineLabel + '</div></div>';
             
             html += '<div class="recommendation"><div class="rec-label">Recommended</div>';
             html += '<div class="rec-title">' + rec.type + '</div></div>';
