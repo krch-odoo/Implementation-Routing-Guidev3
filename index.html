@@ -111,7 +111,7 @@
         <div id="assessment">
             <div class="header">
                 <div class="title">Implementation Routing Guide</div>
-                <div class="subtitle">Route implementations strategically based on client timeline and capacity. Internal team: 3-4 week lead time + 3-12 month implementation. Partners: can start sooner, scale resources.</div>
+                <div class="subtitle">Route implementations strategically based on client timeline and capacity. Internal team: 3-4 week lead time + 3-12 month implementation. Partners: Clients have many options, may start sooner & scale resources.</div>
             </div>
             <div id="questionContainer"></div>
             <div class="button-group">
@@ -127,7 +127,7 @@
 
     <script>
         var questions = [
-            { id: 'size', q: 'How many users will this implementation serve?', d: 'This impacts complexity and resource requirements.', opts: [{v: 'small', t: 'Under 50 users', d: 'Smaller deployment'}, {v: 'large', t: '50+ users', d: 'Enterprise-scale deployment'}] },
+            { id: 'size', q: 'How many users will this implementation serve?', d: 'This impacts complexity and resource requirements.', opts: [{v: 'small', t: 'Under 50 users', d: 'Small or Medium-size business deployment'}, {v: 'large', t: '50+ users', d: 'Large-scale deployment'}] },
             { id: 'multi', q: 'Does the client have multinational presence or intercurrency transactions?', d: 'Multi-national operations with multiple currencies add complexity.', opts: [{v: 'no', t: 'No', d: 'Single country, single currency'}, {v: 'yes', t: 'Yes', d: 'Multiple countries or intercurrency needs'}] },
             { id: 'hosting', q: 'What is the hosting preference?', d: 'Hosting choice significantly impacts complexity and internal capacity.', opts: [{v: 'on', t: 'On-Premise', d: 'Hosted on client infrastructure'}, {v: 'sh', t: 'Odoo.sh (Cloud)', d: 'Odoo-managed cloud hosting'}, {v: 'ol', t: 'Online (SaaS)', d: 'Standard Odoo Online'}] },
             { id: 'deadline', q: 'What is the client\'s go-live deadline?', d: 'This is the hard constraint. When does the client need to be live?', opts: [{v: 'urgent', t: 'Urgent: Less than 2 months', d: 'Client must go live less than 60 days'}, {v: 'medium', t: 'Medium: 2-4 months', d: 'Go-live window 60-120 days'}, {v: 'flex', t: 'Flexible: 4+ months', d: 'Go-live 120+ days out'}] },
@@ -208,7 +208,7 @@
         function getRec() {
             var a = answers;
             
-            if (a.size === 'large') return {type: 'Partner', reason: 'Large client (50+ users) requires dedicated partner resources.'};
+            if (a.size === 'large') return {type: 'Partner', reason: 'Large client (50+ users) may require dedicated partner resources.'};
             if (a.multi === 'yes') return {type: 'Partner', reason: 'Multinational presence or intercurrency transactions require partner expertise.'};
             if (a.hosting === 'on') return {type: 'Partner', reason: 'On-premise hosting requires partner expertise and infrastructure management.'};
             if (a.comp === 'reg' && a.maturity === 'none') return {type: 'Partner', reason: 'Regulated industry + limited internal IT requires partner expertise.'};
@@ -256,7 +256,7 @@
                 html += '<li>Hosting preference and compliance needs</li>';
                 html += '<li>Partnership team sends 1-3 recommendations</li>';
                 html += '<li>Share partner page (odoo.com/partners) with client</li>';
-                html += '<li>Engage with partner for project updates and expansion opportunities</li>';
+                html += '<li>Engage with contact from client's hired partner for project updates and expansion opportunities</li>';
                 html += '</ol></div></div>';
             } else {
                 html += '<div class="recommendation"><div class="section-header">Timeline</div>';
@@ -268,10 +268,10 @@
                 if (rec.pathway === 'Pre-Sales SOW Process') {
                     html += '<li>Set expectation: 3-4 weeks to START, then 3-12 months implementation</li>';
                     html += '<li>Confirm client need and scope, ensure budget approved</li>';
-                    html += '<li>Submit SOW ticket via Pre-sales project app (2-day SLA)</li>';
+                    html += '<li>Submit SOW ticket via Pre-sales project app (3-4 day turnaround)</li>';
                     html += '<li>Gather requirements: company info, pain points, core modules</li>';
                     html += '<li>Pre-sales provides estimate with phased workflows</li>';
-                    html += '<li>Implementation team takes over post-approval</li>';
+                    html += '<li>Implementation team takes over post-approval and success pack confirmation</li>';
                     html += '<li>Schedule touchpoints throughout implementation</li>';
                 } else if (rec.pathway === 'Work with assigned BSA') {
                     html += '<li>Confirm client need and scope</li>';
@@ -286,7 +286,7 @@
                     html += '<li>BSA provides realistic timeline to go-live</li>';
                     html += '<li>Verify timeline meets client deadline</li>';
                     html += '<li>Implementation proceeds with BSA</li>';
-                    html += '<li>Position for expansion conversations</li>';
+                    html += '<li>Position for expansion conversations & additional success packs necessary for go-live</li>';
                 }
                 html += '</ol></div></div>';
                 
