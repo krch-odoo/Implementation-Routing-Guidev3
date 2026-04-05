@@ -14,6 +14,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow-x: hidden;
         }
         .container {
             background: white;
@@ -22,10 +23,11 @@
             max-width: 650px;
             width: 100%;
             padding: 40px;
+            overflow-x: hidden;
         }
         .header { margin-bottom: 30px; }
-        .title { font-size: 28px; font-weight: 700; color: #21272B; margin-bottom: 8px; }
-        .subtitle { font-size: 14px; color: #999; line-height: 1.5; }
+        .title { font-size: 28px; font-weight: 700; color: #21272B; margin-bottom: 8px; word-wrap: break-word; overflow-wrap: break-word; }
+        .subtitle { font-size: 14px; color: #999; line-height: 1.5; word-wrap: break-word; overflow-wrap: break-word; }
         .step-indicator { font-size: 13px; color: #714B67; font-weight: 600; margin-bottom: 20px; }
         .badges { margin-bottom: 20px; }
         .badge {
