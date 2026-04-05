@@ -111,7 +111,7 @@
 
     <script>
         var questions = [
-            { id: 'size', q: 'How many users will this implementation serve?', d: 'This impacts complexity and resource requirements.', opts: [{v: 'small', t: 'Under 50 users', d: 'Smaller deployment'}, {v: 'large', t: '50+ users', d: 'Enterprise-scale deployment'}] },
+            { id: 'size', q: 'How many users will this implementation serve?', d: 'This impacts complexity and resource requirements.', opts: [{v: '>50 users', t: 'Under 50 users', d: 'Smaller deployment'}, {v: '50+', t: '50+ users', d: 'Enterprise-scale deployment'}] },
             { id: 'multi', q: 'Does the client have multinational presence or intercurrency transactions?', d: 'Multi-national operations with multiple currencies add complexity.', opts: [{v: 'no', t: 'No', d: 'US-Based company, USD currency'}, {v: 'yes', t: 'Yes', d: 'Multiple countries or intercurrency needs'}] },
             { id: 'hosting', q: 'What is the hosting preference?', d: 'Hosting choice significantly impacts complexity and internal capacity.', opts: [{v: 'On-Premise', t: 'On-Premise', d: 'Hosted on client infrastructure'}, {v: 'sh', t: 'Odoo.sh (Platform)', d: 'Odoo-managed Platform hosting through GitHub'}, {v: 'online', t: 'Online (SaaS)', d: 'Standard Odoo Online'}] },
             { id: 'deadline', q: 'What is the client\'s go-live deadline?', d: 'This is the hard constraint. When does the client need to be live?', opts: [{v: 'urgent', t: 'Urgent: Less than 2 months', d: 'Client must go live less than 60 days'}, {v: 'medium', t: 'Medium: 2-4 months', d: 'Go-live window 60-120 days'}, {v: 'flexible', t: 'Flexible: 4+ months', d: 'Go-live 120+ days out'}] },
