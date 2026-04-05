@@ -95,7 +95,7 @@
         <div id="assessment">
             <div class="header">
                 <div class="title">Implementation Routing Guide</div>
-                <div class="subtitle">Route implementations strategically based on client timeline and capacity. Internal team: 3-4 week lead time + 3-12 month implementation. Partners: can start sooner, scale resources.</div>
+                <div class="subtitle">Route implementations strategically based on client timeline and capacity. Internal team: 3-4 week lead time + 3-12 month implementation. Partners: May have capacity to start sooner & scale resources.</div>
             </div>
             <div id="questionContainer"></div>
             <div class="button-group">
@@ -111,14 +111,14 @@
 
     <script>
         var questions = [
-            { id: 'size', q: 'How many users will this implementation serve?', d: 'This impacts complexity and resource requirements.', opts: [{v: '>50 users', t: 'Under 50 users', d: 'Smaller deployment'}, {v: '50+', t: '50+ users', d: 'Enterprise-scale deployment'}] },
+            { id: 'size', q: 'How many users will this implementation serve?', d: 'This impacts complexity and resource requirements.', opts: [{v: '>50 users', t: 'Under 50 users', d: 'Small or Medium-size business deployment'}, {v: '50+', t: '50+ users', d: 'Large-scale deployment'}] },
             { id: 'multi', q: 'Does the client have multinational presence or intercurrency transactions?', d: 'Multi-national operations with multiple currencies add complexity.', opts: [{v: 'no', t: 'No', d: 'US-Based company, USD currency'}, {v: 'yes', t: 'Yes', d: 'Multiple countries or intercurrency needs'}] },
-            { id: 'hosting', q: 'What is the hosting preference?', d: 'Hosting choice significantly impacts complexity and internal capacity.', opts: [{v: 'On-Premise', t: 'On-Premise', d: 'Hosted on client infrastructure'}, {v: 'sh', t: 'Odoo.sh (Platform)', d: 'Odoo-managed Platform hosting through GitHub'}, {v: 'online', t: 'Online (SaaS)', d: 'Standard Odoo Online'}] },
+            { id: 'hosting', q: 'What is the hosting preference?', d: 'Hosting choice significantly impacts complexity and internal capacity.', opts: [{v: 'On-Premise', t: 'On-Premise', d: 'Hosted on client infrastructure'}, {v: 'Odoo.sh', t: 'Odoo.sh (Platform)', d: 'Odoo-managed Platform hosting through GitHub'}, {v: 'online', t: 'Online (SaaS)', d: 'Standard Odoo Online'}] },
             { id: 'deadline', q: 'What is the client\'s go-live deadline?', d: 'This is the hard constraint. When does the client need to be live?', opts: [{v: 'urgent', t: 'Urgent: Less than 2 months', d: 'Client must go live less than 60 days'}, {v: 'medium', t: 'Medium: 2-4 months', d: 'Go-live window 60-120 days'}, {v: 'flexible', t: 'Flexible: 4+ months', d: 'Go-live 120+ days out'}] },
             { id: 'wait', q: 'Can the client wait for our lead time?', d: 'Our internal team typically has a 3-4 week assignment lead time.', opts: [{v: 'no', t: 'No, they need to start right away', d: 'Cannot wait 3-4 weeks'}, {v: 'yes', t: 'Yes, they can wait 3-4 weeks', d: 'Fine with our lead time'}] },
             { id: 'complex', q: 'What is the implementation complexity?', d: 'Consider custom modules, developments, and extent of configuration.', opts: [{v: 'low', t: 'Low complexity', d: 'Standard configuration'}, {v: 'med', t: 'Medium complexity', d: 'Some custom modules'}, {v: 'high', t: 'High complexity', d: 'Heavy custom development'}] },
             { id: 'comp', q: 'Are there compliance or regulatory requirements?', d: 'Industry-specific regulations impact complexity and expertise needed.', opts: [{v: 'std', t: 'Standard SMB', d: 'No specific compliance'}, {v: 'reg', t: 'HIPAA / Finance / Regulated', d: 'Compliance needs'}] },
-            { id: 'maturity', q: 'What is the client\'s technical maturity?', d: 'Client IT capability and hands-on support availability.', opts: [{v: 'no internal IT', t: 'No internal IT / Minimal', d: 'Limited technical support'}, {v: 'Has IT team', t: 'Has IT team', d: 'Internal IT team'}, {v: 'Advanced IT capability', t: 'Advanced / Sophisticated', d: 'Strong tech team'}] },
+            { id: 'maturity', q: 'What is the client\'s technical maturity?', d: 'Client IT capability and hands-on support availability.', opts: [{v: 'no internal IT', t: 'No internal IT / Minimal', d: 'Limited technical support'}, {v: 'Has IT team', t: 'Has IT team', d: 'Internal IT team'}, {v: 'Advanced IT capability', t: 'Advanced / Sophisticated', d: 'Strong tech team / Development experience'}] },
             { id: 'hist', q: 'Prior implementation history with us?', d: 'This clarifies the workflow path.', opts: [{v: 'none', t: 'None', d: 'First implementation'}, {v: 'active hours', t: 'Active hours', d: 'Current Success Pack'}, {v: 'expired or hours deplated', t: 'Expired hours or hours depleted', d: 'Prior implementation ended'}] }
         ];
         
